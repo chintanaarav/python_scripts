@@ -32,7 +32,6 @@ if uid is False:
     print(error_message)
     log_error('no_files', error_message)  # Use a generic file name for the log
     exit()
-
 models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
 
 # Provide document module folder ID where we need to move the file
