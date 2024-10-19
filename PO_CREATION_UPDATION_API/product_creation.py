@@ -30,11 +30,6 @@ class ProductCreation:
             print(error_message)
             ErrorHandling.handle_error(self.file_id, self.error_folder_id, self.file_name, error_message, None)
 
-        except (Exception, xmlrpc.client.Fault) as e:
-            error_message = f"Unexpected error occurred during product creation: {str(e)}"
-            print(error_message)
-            ErrorHandling.handle_error(self.file_id, self.error_folder_id, self.file_name, error_message, None)
-
         return product_ids
 
     def create_product_without_no(self):
@@ -53,11 +48,6 @@ class ProductCreation:
 
         except (ValueError, TypeError) as e:
             error_message = f"Error during product creation: {str(e)}"
-            print(error_message)
-            ErrorHandling.handle_error(self.file_id, self.error_folder_id, self.file_name, error_message, None)
-
-        except (Exception, xmlrpc.client.Fault) as e:
-            error_message = f"Unexpected error occurred during product creation: {str(e)}"
             print(error_message)
             ErrorHandling.handle_error(self.file_id, self.error_folder_id, self.file_name, error_message, None)
 
