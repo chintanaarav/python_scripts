@@ -2,7 +2,7 @@ import xmlrpc.client
 
 class ServerConnection:
      
-     def connection():
+     def connection(self):
 
        # Odoo credentials and URL
        url = "https://cocreateaarav-itgnew-itgdev-15781887.dev.odoo.com/"  # Odoo instance URL/IP address

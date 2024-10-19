@@ -1,6 +1,5 @@
 
 from datetime import datetime
-#from main import Main
 
 class XmlToDictionary:
 

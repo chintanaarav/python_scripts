@@ -13,7 +13,8 @@ from product_creation import ProductCreation
 from purchase_order_creation import PurchaseOrderCreation
 
 class Main:
-  
+   
+   @staticmethod
    def main():
         uid, url, db, password = ServerConnection.connection() 
        # Define folder IDs (replace with your folder IDs)
