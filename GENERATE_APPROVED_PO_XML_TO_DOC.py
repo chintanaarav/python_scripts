@@ -150,6 +150,7 @@ def main():
                     logging.error(f"Error processing purchase order {order['id']}: {e}")
                     continue  # Continue with the next purchase order if there's an error
         else:
+            logging.error("No purchase orders to process.")
             print("No purchase orders to process.")
     except Exception as e:
         logging.error(f"An error occurred during execution: {e}")
