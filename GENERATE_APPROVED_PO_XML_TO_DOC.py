@@ -121,8 +121,9 @@ def main():
         common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
         uid = common.authenticate(db, username, password, {})
         if uid is False:
-            logging.error(f"Authentication failed. Check your credentials.")
-            raise
+            logging.error("Authentication failed. Check your credentials.")
+            print("Authentication failed. Check your credentials.")
+            exit()
         
         models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
 
