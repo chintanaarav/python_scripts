@@ -40,9 +40,7 @@ class ProductCreation:
         product_data={}
         try:
           #without material no 
-          #product_data['id'] = product_lines[2]['product_id']   #product id
           product_data['name']=product_lines[2]['name']  #product name             
-          #product_data['default_code']=product_lines[2]['product_id']  #internal refrence
           print(product_data)
           #creating product            
           try:

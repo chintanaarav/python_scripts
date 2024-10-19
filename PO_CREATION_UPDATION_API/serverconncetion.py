@@ -13,7 +13,6 @@ class ServerConnection:
 
        #getting server version
        common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(url))
-       version =common.version()
        #authentication
        uid = common.authenticate(db, username, password, {})
 

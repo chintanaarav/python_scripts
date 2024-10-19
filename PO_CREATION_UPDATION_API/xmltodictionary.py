@@ -22,16 +22,16 @@ class XmlToDictionary:
         print("data of xml",xml_data)
         order_data={}
         #header data
-        for E1EDKA1 in xml_data['ORDERS05']['IDOC']['E1EDKA1']:
-             if E1EDKA1.get('PARVW') == 'LF':     #LF : Vendor         
+        for e1edka1 in xml_data['ORDERS05']['IDOC']['E1EDKA1']:
+             if e1edka1.get('PARVW') == 'LF':     #LF : Vendor         
                  try:
-                  partner_id = int(E1EDKA1.get('PARTN'))
+                  partner_id = int(e1edka1.get('PARTN'))
                   order_data['partner_id'] = partner_id   #vendor id
                  except (ValueError, TypeError):
                   print("Error: Invalid partner ID in XML")
-                 order_data['partner_ref']=E1EDKA1.get('NAME1') #vendor name  
-             elif E1EDKA1.get('PARVW') == 'OWN':  
-                  order_data['sap_user_id'] =E1EDKA1.get('PARTN')
+                 order_data['partner_ref']=e1edka1.get('NAME1') #vendor name  
+             elif e1edka1.get('PARVW') == 'OWN':  
+                  order_data['sap_user_id'] =e1edka1.get('PARTN')
                   break
 
         for e1edk03 in xml_data['ORDERS05']['IDOC']['E1EDK03']:
@@ -49,7 +49,6 @@ class XmlToDictionary:
             if e1edk14.get('QUALF') == '009':
                  order_data['po_group']= e1edk14.get('ORGID') #purchase group
                  break  
-    #order_data['payment_term_id']=xml_data['ORDERS05']['IDOC']['E1EDK01']['ZTERM']     #payment terms
 
          #line items
         order_lines = []
@@ -70,8 +69,6 @@ class XmlToDictionary:
                 line_data['date_planned'] = XmlToDictionary.convert_date(order_item['E1EDP20']['EDATU'])
                 order_lines.append((0, 0, line_data)) 
 
-        
-        #order_lines.append(line_data)
         order_data['order_line']=order_lines
 
         return order_data

@@ -20,8 +20,7 @@ class Main:
         source_folder_id = 9  # ID of the source folder containing XML files
         processed_folder_id = 12  # ID of the folder to move processed files
         error_folder_id = 13  # ID of the folder to move error files
-        #getting details from odoo server
-        #uid, url, db, password = ServerConnection.connection()                                
+        #getting details from odoo server                               
         if uid :
            print("authentication succeeded")
            models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(url))   
@@ -85,9 +84,6 @@ class Main:
                             product_id = p1[2]['product_id']
                             product_name=p1[2]['name']
                             #searching product id
-                            #if product_id:
-                               #product_ids = models.execute_kw(db, uid, password,'product.product', 'search',
-                                      #[[['default_code', '=', product_id ]]])
                             product_ids = models.execute_kw(db, uid, password, 'product.product', 'search', 
                                      [['|', ['default_code', '=', product_id], ['name', '=', product_name]]])
                             print("Product id",product_ids)
@@ -97,10 +93,7 @@ class Main:
                                   #creating product    
                             else:
                                   product_ids=ProductCreation.create_product_with_no(p1,file_name,file_id, error_folder_id)   
-                                  p1[2]['product_id']=product_ids
-                            #else:
-                                 # product_ids=ProductCreation.create_product_without_no(p1,file_name,file_id, error_folder_id)   
-                                 # p1[2]['product_id']=product_ids                                                           
+                                  p1[2]['product_id']=product_ids                                                         
                       except Exception as e:
                          # Construct the new path
                          error_message = f"Error creating vendor: {str(e)}"
@@ -120,7 +113,6 @@ class Main:
                               #updating purhcase order
                               print(order_data)
                               result=PurchaseOrderCreation.update_purchase_order(order_data,file_name,file_id, error_folder_id,models,uid,db,password) 
-                              #result = models.execute_kw(db, uid, password,'purchase.order', 'write', [[purchase_ids], order_data])
                               print(result)                            
                               #reading purchase order
                               if result:  
