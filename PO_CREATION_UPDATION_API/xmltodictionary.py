@@ -4,6 +4,7 @@ from datetime import datetime
 
 class XmlToDictionary:
 
+     @staticmethod
      def convert_date(date_str):
          try:
              year = date_str[:4]
@@ -17,7 +18,7 @@ class XmlToDictionary:
          except ValueError:
              raise ValueError("Invalid date format. Please provide a date in YYYYMMDD format.")
     
-     def parse_xml(xml_data):
+     def parse_xml(self,xml_data):
 
         print("data of xml",xml_data)
         order_data={}

@@ -139,8 +139,7 @@ class Main:
                   else: 
                     error_message = f"Unexpected error while creating data:'{file_name}'"
                     print("Unexpected error while creating data")    
-                    ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, models) 
-                    continue                      
+                    ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, models)                     
            else:    
               error_message = "No files found in Doucments"
               print(error_message)

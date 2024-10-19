@@ -3,7 +3,7 @@ from serverconncetion import ServerConnection
 from error_handling import ErrorHandling
 
 class VendorCreation:
-    def create_vendor(order_data,file_name,file_id, error_folder_id):
+    def create_vendor(self,order_data,file_name,file_id, error_folder_id):
   
         uid, url, db, password = ServerConnection.connection()  
         vendor_data={}

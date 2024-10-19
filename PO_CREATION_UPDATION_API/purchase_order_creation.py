@@ -3,7 +3,7 @@ from serverconncetion import ServerConnection
 from error_handling import ErrorHandling
 
 class PurchaseOrderCreation:
-    def create_purchase_order( order_data,file_name,file_id, error_folder_id):
+    def create_purchase_order(self, order_data,file_name,file_id, error_folder_id):
          
          uid, url, db, password = ServerConnection.connection()
          created_id = None  # Initialize created_id to None
@@ -23,7 +23,7 @@ class PurchaseOrderCreation:
             print(error_message)
             ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, models)              
          return created_id  
-    def update_purchase_order( order_data,file_name,file_id, error_folder_id,models,uid,db,password):
+    def update_purchase_order( self,order_data,file_name,file_id, error_folder_id,models,uid,db,password):
       
        
       try:
