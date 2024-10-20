@@ -12,7 +12,6 @@ class XmlToDictionary:
             raise ValueError("Invalid date format. Please provide a date in YYYYMMDD format.")
     
     def parse_xml(self, xml_data):
-        print("data of xml", xml_data)
         order_data = {}
         
         self.extract_header_data(xml_data, order_data)

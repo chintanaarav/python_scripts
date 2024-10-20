@@ -45,6 +45,7 @@ class Main:
     @staticmethod
     def process_xml_files(xml_files, models, db, uid, password, processed_folder_id, error_folder_id):
         xml_files.sort(key=lambda x: re.search(r'\d{8}_\d{6}', x['name']).group(0) if re.search(r'\d{8}_\d{6}', x['name']) else '')
+        print(xml_files)
         for xml_file in xml_files:
             Main.process_single_xml_file(xml_file, models, db, uid, password, processed_folder_id, error_folder_id)
 
@@ -54,15 +55,13 @@ class Main:
         file_name = xml_file['name']
         file_data = xml_file['datas']
         decoded_data = base64.b64decode(file_data)
-
-        print(f"Contents of {file_name}:", decoded_data)
         xml_data = ET.parse(BytesIO(decoded_data))
         order_data = XmlToDictionary().parse_xml(xml_data)
 
         if order_data:
             Main.process_order_data(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id)
         else:
-            Main.handle_unexpected_error(file_id, error_folder_id, file_name)
+            Main.handle_unexpected_error(file_id, error_folder_id, file_name, uid, db, password, models)
 
     @staticmethod
     def process_order_data(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id):
@@ -129,7 +128,6 @@ class Main:
         try:
             if purchase_ids:
                 result = PurchaseOrderCreation().update_purchase_order(order_data, file_name, file_id, error_folder_id, models, uid, db, password)
-                print(result)
 
                 if result:
                     print(f"Purchase Order updated successfully: {purchase_ids}")
