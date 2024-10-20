@@ -64,17 +64,18 @@ class Main:
             Main.process_order_data(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id)
           else:
             Main.handle_unexpected_error(file_id, error_folder_id, file_name, uid, db, password, models)
+            return
         except xml.parsers.expat.ExpatError as e:
             error_message = f"XML parsing error in file {xml_file['name']}: {e}"
             print(error_message)
             ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
-            return None
+            return 
         # Move the file to the error folder or handle it appropriately
         except Exception as e:
             error_message = f"Unexpected error in file {xml_file['name']}: {e}"
             print(error_message)
             ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
-            return None           
+            return          
     @staticmethod
     def process_order_data(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id):
         sap_user_id = order_data['sap_user_id']
@@ -106,12 +107,12 @@ class Main:
             if partner_id:
                 return partner_id[0]
             else:
-                return VendorCreation.create_vendor(order_data, file_name, file_id, error_folder_id,uid,db,password,models)
+                return VendorCreation().create_vendor(order_data, models, db, uid, password, file_name, file_id, error_folder_id)
         except Exception as e:
             error_message = f"Error creating vendor: {str(e)}"
             print(error_message)
             ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
-            return None
+            return 
 
     @staticmethod
     def process_order_lines(order_data, models, db, uid, password, file_name, file_id, error_folder_id):
@@ -126,7 +127,7 @@ class Main:
             if product_ids:
                 p1[2]['product_id'] = product_ids[0]
             else:
-                product_ids = ProductCreation.create_product_with_no(p1, file_name, file_id, error_folder_id)
+                product_ids = ProductCreation().create_product_with_no(p1, models, db, uid, password, file_name, file_id, error_folder_id)
                 p1[2]['product_id'] = product_ids
 
     @staticmethod
@@ -157,7 +158,7 @@ class Main:
             error_message = f"Unexpected error while creating/updating purchase order: '{file_name}': {str(e)}"
             print(error_message)
             ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
-
+            return
     @staticmethod
     def handle_unexpected_error(file_id, error_folder_id, file_name, uid, db, password, models):
         error_message = f"Unexpected error while creating data: '{file_name}'"

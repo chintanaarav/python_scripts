@@ -3,7 +3,7 @@ from serverconncetion import ServerConnection
 from error_handling import ErrorHandling
 
 class ProductCreation:
-    def __init__(self, product_lines, file_name, file_id, error_folder_id, models, uid, db, password):
+    def __init__(self, product_lines, models, uid, db, password, file_name, file_id, error_folder_id):
         self.product_lines = product_lines
         self.file_name = file_name
         self.file_id = file_id
@@ -35,7 +35,7 @@ class ProductCreation:
 
         return product_ids
 
-    def create_product_without_no(self):
+    """def create_product_without_no(self):
 
         product_data = {}
 
@@ -53,4 +53,4 @@ class ProductCreation:
             print(error_message)
             ErrorHandling.handle_error(self.file_id, self.error_folder_id, self.file_name, error_message, self.uid, self.db, self.password, self.models)
 
-        return product_ids
+        return product_ids"""
