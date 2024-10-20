@@ -1,8 +1,8 @@
 import os
 import xmltodict as ET
 import xmlrpc.client
+import xml.parsers.expat
 import base64
-import traceback
 from io import BytesIO
 import re
 from xmltodictionary import XmlToDictionary
@@ -54,15 +54,27 @@ class Main:
         file_id = xml_file['id']
         file_name = xml_file['name']
         file_data = xml_file['datas']
-        decoded_data = base64.b64decode(file_data)
-        xml_data = ET.parse(BytesIO(decoded_data))
-        order_data = XmlToDictionary().parse_xml(xml_data)
 
-        if order_data:
+        try:
+          decoded_data = base64.b64decode(file_data)
+          xml_data = ET.parse(BytesIO(decoded_data))
+          order_data = XmlToDictionary().parse_xml(xml_data)
+
+          if order_data:
             Main.process_order_data(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id)
-        else:
+          else:
             Main.handle_unexpected_error(file_id, error_folder_id, file_name, uid, db, password, models)
-
+        except xml.parsers.expat.ExpatError as e:
+            error_message = f"XML parsing error in file {xml_file['name']}: {e}"
+            print(error_message)
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
+            return None
+        # Move the file to the error folder or handle it appropriately
+        except Exception as e:
+            error_message = f"Unexpected error in file {xml_file['name']}: {e}"
+            print(error_message)
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
+            return None           
     @staticmethod
     def process_order_data(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id):
         sap_user_id = order_data['sap_user_id']
