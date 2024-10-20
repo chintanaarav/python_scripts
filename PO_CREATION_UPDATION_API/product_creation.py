@@ -35,22 +35,3 @@ class ProductCreation:
 
         return product_ids
 
-    """def create_product_without_no(self):
-
-        product_data = {}
-
-        try:
-            # without material no
-            product_data['name'] = self.product_lines[2]['name']  # product name
-            print(product_data)
-
-            # creating product
-            product_ids = self.models.execute_kw(self.db, self.uid, self.password, 'product.product', 'create', [product_data])  # creating product
-            print("Created product ->", product_ids)
-
-        except (ValueError, TypeError) as e:
-            error_message = f"Error during product creation: {str(e)}"
-            print(error_message)
-            ErrorHandling.handle_error(self.file_id, self.error_folder_id, self.file_name, error_message, self.uid, self.db, self.password, self.models)
-
-        return product_ids"""
