@@ -6,7 +6,7 @@ import base64
 
 
 class ErrorHandling:
-       def handle_error(self,file_id, error_folder_id, file_name, error_message, models):
+       def handle_error(self,file_id, error_folder_id, file_name, error_message,uid, db, password, models):
         # Log the error and move the file to the error folder
         print(f'Handling error for file: {file_name}')
         
@@ -26,7 +26,7 @@ class ErrorHandling:
                 'mimetype': 'text/plain',
                 'folder_id': error_folder_id,
             }
-            uid, db, password = ServerConnection.connection()
+            
             models.execute_kw(db, uid, password, 'documents.document', 'create', [error_log_attachment])
         
         # Move the original XML file to the error folder

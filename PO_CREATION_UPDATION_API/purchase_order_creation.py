@@ -5,11 +5,10 @@ from error_handling import ErrorHandling
 class PurchaseOrderCreation:
     PURCHASE_ORDER_MODEL = 'purchase.order'  # Define the constant
 
-    def create_purchase_order(self, order_data, file_name, file_id, error_folder_id):
-        uid, url, db, password = ServerConnection.connection()
+    def create_purchase_order(self, order_data, file_name, file_id, error_folder_id, models, uid, db, password):
+
         created_id = None  # Initialize created_id to None
         try:
-            models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
             # Creating purchase order  
             created_id = models.execute_kw(db, uid, password, self.PURCHASE_ORDER_MODEL, 'create', [order_data])
             # Confirming purchase order
@@ -79,11 +78,10 @@ class PurchaseOrderCreation:
         except xmlrpc.client.Fault as e:
             error_message = f"Error updating purchase order: {str(e)}"
             print(error_message)
-            ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, models)
-
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
         except Exception as e:
             error_message = f"Unexpected error while updating purchase order: {str(e)}"
             print(error_message)
-            ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, models)
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
 
         return result

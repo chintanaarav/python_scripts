@@ -18,7 +18,7 @@ class Main:
 
     @staticmethod
     def main():
-        uid, url, db, password = ServerConnection.connection()
+        uid, url, db, password = ServerConnection().connection()
         source_folder_id = 9  # Source folder ID
         processed_folder_id = 12  # Processed folder ID
         error_folder_id = 13  # Error folder ID
@@ -31,10 +31,10 @@ class Main:
             if xml_files:
                 Main.process_xml_files(xml_files, models, db, uid, password, processed_folder_id, error_folder_id)
             else:
-                Main.handle_no_files_found(error_folder_id)
+                Main.handle_no_files_found()
 
         else:
-            Main.handle_authentication_failure(error_folder_id)
+            Main.handle_authentication_failure()
 
     @staticmethod
     def fetch_xml_files(models, db, uid, password, folder_id):
@@ -57,7 +57,7 @@ class Main:
 
         print(f"Contents of {file_name}:", decoded_data)
         xml_data = ET.parse(BytesIO(decoded_data))
-        order_data = XmlToDictionary.parse_xml(xml_data)
+        order_data = XmlToDictionary().parse_xml(xml_data)
 
         if order_data:
             Main.process_order_data(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id)
@@ -95,11 +95,11 @@ class Main:
             if partner_id:
                 return partner_id[0]
             else:
-                return VendorCreation.create_vendor(order_data, file_name, file_id, error_folder_id)
+                return VendorCreation.create_vendor(order_data, file_name, file_id, error_folder_id,uid,db,password,models)
         except Exception as e:
             error_message = f"Error creating vendor: {str(e)}"
             print(error_message)
-            ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, models)
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
             return None
 
     @staticmethod
@@ -128,7 +128,7 @@ class Main:
 
         try:
             if purchase_ids:
-                result = PurchaseOrderCreation.update_purchase_order(order_data, file_name, file_id, error_folder_id, models, uid, db, password)
+                result = PurchaseOrderCreation().update_purchase_order(order_data, file_name, file_id, error_folder_id, models, uid, db, password)
                 print(result)
 
                 if result:
@@ -139,33 +139,43 @@ class Main:
 
                     models.execute_kw(db, uid, password, Main.DOCUMENTS_MODEL, 'write', [[file_id], {'folder_id': processed_folder_id}])
             else:
-                order_id = PurchaseOrderCreation.create_purchase_order(order_data, file_name, file_id, error_folder_id)
+                order_id = PurchaseOrderCreation().create_purchase_order(order_data, file_name, file_id, error_folder_id, models, uid, db, password)
                 if order_id:
                     print("Created Purchase order ->", order_id)
                     models.execute_kw(db, uid, password, Main.DOCUMENTS_MODEL, 'write', [[file_id], {'folder_id': processed_folder_id}])
         except xmlrpc.client.Fault as e:
             error_message = f"Unexpected error while creating/updating purchase order: '{file_name}': {str(e)}"
             print(error_message)
-            ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, models)
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
 
     @staticmethod
-    def handle_unexpected_error(file_id, error_folder_id, file_name):
+    def handle_unexpected_error(file_id, error_folder_id, file_name, uid, db, password, models):
         error_message = f"Unexpected error while creating data: '{file_name}'"
         print("Unexpected error while creating data")
-        ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, None)
+        ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message, uid, db, password, models)
 
     @staticmethod
-    def handle_no_files_found(error_folder_id):
+    def handle_no_files_found():
         error_message = "No files found in Documents"
         print(error_message)
-        ErrorHandling.handle_error(None, error_folder_id, "authentication_error.txt", error_message, None)
+         # Get the directory where the script is located
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+        error_file_path = os.path.join(script_directory, "no_file_found.txt")
+        # Write the error message to a file in the current script's directory
+        with open(error_file_path, 'w') as error_file:
+          error_file.write(error_message)
         exit()
 
     @staticmethod
-    def handle_authentication_failure(error_folder_id):
+    def handle_authentication_failure():
         error_message = "Authentication failed. Unable to connect to the Odoo server."
         print(error_message)
-        ErrorHandling.handle_error(None, error_folder_id, "authentication_error.txt", error_message, None)
+        # Get the directory where the script is located
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+        error_file_path = os.path.join(script_directory, "authentication_error.txt")
+        # Write the error message to a file in the current script's directory
+        with open(error_file_path, 'w') as error_file:
+          error_file.write(error_message)
         exit()
 
 
