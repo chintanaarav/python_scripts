@@ -5,7 +5,7 @@ from datetime import datetime
 import logging
 
 # Set up logging
-LOG_FILENAME = '/path/to/your/directory/purchase_order_error_log.txt'
+LOG_FILENAME = r'C:\Users\Jigar\Documents\SAP to odoo testing\purchase_order_error_log.txt'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.ERROR, 
                     format='%(asctime)s %(levelname)s %(message)s')
 

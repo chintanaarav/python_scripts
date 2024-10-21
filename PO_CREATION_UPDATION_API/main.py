@@ -45,7 +45,6 @@ class Main:
     @staticmethod
     def process_xml_files(xml_files, models, db, uid, password, processed_folder_id, error_folder_id):
         xml_files.sort(key=lambda x: re.search(r'\d{8}_\d{6}', x['name']).group(0) if re.search(r'\d{8}_\d{6}', x['name']) else '')
-        print(xml_files)
         for xml_file in xml_files:
             Main.process_single_xml_file(xml_file, models, db, uid, password, processed_folder_id, error_folder_id)
 
@@ -117,18 +116,24 @@ class Main:
     @staticmethod
     def process_order_lines(order_data, models, db, uid, password, file_name, file_id, error_folder_id):
         product_lines = order_data['order_line']
-        for p1 in product_lines:
-            product_id = p1[2]['product_id']
-            product_name = p1[2]['name']
-            product_ids = models.execute_kw(db, uid, password, 'product.product', 'search',
+        try:
+          for p1 in product_lines:
+              product_id = p1[2]['product_id']
+              product_name = p1[2]['name']
+              product_ids = models.execute_kw(db, uid, password, 'product.product', 'search',
                                              [['|', ['default_code', '=', product_id], ['name', '=', product_name]]])
-            print("Product id", product_ids)
+              print("Product id", product_ids)
 
-            if product_ids:
-                p1[2]['product_id'] = product_ids[0]
-            else:
-                product_ids = ProductCreation().create_product_with_no(p1, models, db, uid, password, file_name, file_id, error_folder_id)
-                p1[2]['product_id'] = product_ids
+              if product_ids:
+                  p1[2]['product_id'] = product_ids[0]
+              else:
+                  product_ids = ProductCreation().create_product_with_no(p1, models, db, uid, password, file_name, file_id, error_folder_id)
+                  p1[2]['product_id'] = product_ids
+        except Exception as e:
+            error_message = f"Error creating product: {str(e)}"
+            print(error_message)
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
+            return                  
 
     @staticmethod
     def create_or_update_purchase_order(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id):
