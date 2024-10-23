@@ -2,18 +2,25 @@ import xmlrpc.client
 import xml.etree.ElementTree as ET
 import base64
 from datetime import datetime
+from dotenv import load_dotenv
+import os
 import logging
+
+
+# Load the .env file
+load_dotenv('/home/odoo/src/myenv/hashkey.env')
 
 # Set up logging
 LOG_FILENAME = r'C:\Users\Jigar\Documents\SAP to odoo testing\purchase_order_error_log.txt'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.ERROR, 
                     format='%(asctime)s %(levelname)s %(message)s')
-
+ 
 # Odoo credentials and URL
 url = "https://cocreateaarav-itgnew-itgdev-15781887.dev.odoo.com/"  # Odoo instance URL/IP address
 db = "cocreateaarav-itgnew-itgdev-15781887"  # Odoo database name
-username = "john@yopmail.com"  # Instance username
-password = "123456"  # Instance password
+username = os.getenv("ODOO_USERNAME")  # Instance username fetching from hashkey.env
+password = os.getenv("ODOO_PASSWORD")  # Instance password fetching from hashkey.env
+
 
 # Folder ID in the Documents module where the file should be stored
 FOLDER_ID = 14  # Replace this with the actual folder ID in your Odoo system
