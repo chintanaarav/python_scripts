@@ -1,13 +1,17 @@
 import xmlrpc.client
 import base64
+from dotenv import load_dotenv
 import os
 from datetime import datetime
 
+# Load the .env file
+load_dotenv('/home/odoo/src/myenv/hashkey.env')
+ 
 # Odoo credentials and URL
 url = "https://cocreateaarav-itgnew-itgdev-15781887.dev.odoo.com/"  # Odoo instance URL/IP address
 db = "cocreateaarav-itgnew-itgdev-15781887"  # Odoo database name
-username = "john@yopmail.com"  # Instance username
-password = "123456"  # Instance password
+username = os.getenv("ODOO_USERNAME")  # Instance username fetching from hashkey.env
+password = os.getenv("ODOO_PASSWORD")  # Instance password fetching from hashkey.env
 
 # Directories for server and error files
 server_directory = r'C:\Users\Jigar\Documents\SAP to odoo testing\Approved_PO'
