@@ -3,7 +3,7 @@ from error_handling import ErrorHandling
 
 class ProductCreation:  
 
-    def create_product_with_no(self, product_lines, models, uid, db, password, file_name, file_id, error_folder_id):
+    def create_product_with_no(self, product_lines, models, db, uid, password, file_name, file_id, error_folder_id):
 
         product_data = {}
 
@@ -21,7 +21,7 @@ class ProductCreation:
         except (ValueError, TypeError) as e:
             error_message = f"Error during product creation: {str(e)}"
             print(error_message)
-            ErrorHandling.handle_error(file_id, error_folder_id, file_name, error_message, uid, db, password, models)
+            ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message, uid, db, password, models)   
 
         return product_ids
 

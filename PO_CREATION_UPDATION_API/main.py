@@ -18,7 +18,14 @@ class Main:
 
     @staticmethod
     def main():
-        uid, url, db, password = ServerConnection().connection()
+
+        try:
+          uid, url, db, password = ServerConnection().connection()
+        except xmlrpc.client.Fault as e:
+          error_message = f"Server connection error: {str(e)}"
+          print(error_message)
+          Main.handle_connection_failure(error_message)
+
         source_folder_id = 9  # Source folder ID
         processed_folder_id = 12  # Processed folder ID
         error_folder_id = 13  # Error folder ID
@@ -86,9 +93,13 @@ class Main:
             print(order_data)
 
         partner_id = Main.fetch_or_create_vendor(order_data, models, db, uid, password, file_name, file_id, error_folder_id)
+        if not partner_id:
+            return
         order_data['partner_id'] = partner_id
 
-        Main.process_order_lines(order_data, models, db, uid, password, file_name, file_id, error_folder_id)
+        result=Main.process_order_lines(order_data, models, db, uid, password, file_name, file_id, error_folder_id)
+        if  not result:
+            return
 
         Main.create_or_update_purchase_order(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id)
 
@@ -129,11 +140,12 @@ class Main:
               else:
                   product_ids = ProductCreation().create_product_with_no(p1, models, db, uid, password, file_name, file_id, error_folder_id)
                   p1[2]['product_id'] = product_ids
+          return True       
         except Exception as e:
             error_message = f"Error creating product: {str(e)}"
             print(error_message)
             ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
-            return                  
+            return False               
 
     @staticmethod
     def create_or_update_purchase_order(order_data, models, db, uid, password, file_name, file_id, processed_folder_id, error_folder_id):
@@ -194,6 +206,15 @@ class Main:
           error_file.write(error_message)
         exit()
 
+    @staticmethod
+    def handle_connection_failure(error_message):
+        # Get the directory where the script is located
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+        error_file_path = os.path.join(script_directory, "connection_error.txt")
+        # Write the error message to a file in the current script's directory
+        with open(error_file_path, 'w') as error_file:
+          error_file.write(error_message)
+        exit()
 
 # main()
 if __name__ == "__main__":
