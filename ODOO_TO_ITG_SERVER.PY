@@ -27,8 +27,14 @@ def log_error(file_name, error_message):
 folder_id = 14  # Folder ID in the document module
 
 # Connect to Odoo
-common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
-uid = common.authenticate(db, username, password, {})
+try:
+  common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+  uid = common.authenticate(db, username, password, {})
+except xmlrpc.client.Fault as e:
+     error_message = f"Server connection error: {str(e)}"
+     print(error_message)
+     log_error('no_files', error_message)  # Use a generic file name for the log
+     exit()
 
 # Check authentication
 if uid is False:

@@ -15,10 +15,6 @@ username = os.getenv("ODOO_USERNAME")  # Instance username fetching from hashkey
 password = os.getenv("ODOO_PASSWORD")  # Instance password fetching from hashkey.env
 
 
-# Connect to the Odoo server
-common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
-uid = common.authenticate(db, username, password, {})
-
 # Directory containing XML files
 directory_path = r'C:\Users\Jigar\Documents\SAP to odoo testing\upload'  # Change this to your directory path
 error_directory = r'C:\Users\Jigar\Documents\SAP to odoo testing\error_files'  # Specify your error directory path
@@ -29,6 +25,16 @@ def log_error(file_name, error_message):
     error_log_path = os.path.join(error_directory, f'error_{file_name}.txt')
     with open(error_log_path, 'w') as error_file:
         error_file.write(error_message)
+
+# Connect to the Odoo server
+try:
+  common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+  uid = common.authenticate(db, username, password, {})
+except xmlrpc.client.Fault as e:
+     error_message = f"Server connection error: {str(e)}"
+     print(error_message)
+     log_error('no_files', error_message)  # Use a generic file name for the log
+     exit()        
 
 # Check authentication
 if uid is False:

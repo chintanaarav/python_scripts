@@ -125,8 +125,9 @@ def update_purchase_order_status(models, uid, order_id):
 def main():
     try:
         # Authenticate and get the purchase orders
-        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
-        uid = common.authenticate(db, username, password, {})
+        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')    
+        uid = common.authenticate(db, username, password, {})  
+
         if uid is False:
             logging.error("Authentication failed. Check your credentials.")
             print("Authentication failed. Check your credentials.")
