@@ -58,9 +58,11 @@ class PurchaseOrderCreation:
                     existing_line = existing_product_map[incoming_product_id]
                     updated_order_lines.append(
                         (1, existing_line['id'], {
+                            'product_id' : incoming_line[2]['product_id'],
+                            'tax_code' : incoming_line[2]['tax_code'],   
+                            'date_planned': incoming_line[2]['date_planned'],                                                     
                             'product_qty': incoming_line[2]['product_qty'],
-                            'price_unit': incoming_line[2]['price_unit'],
-                            'date_planned': incoming_line[2]['date_planned']
+                            'price_unit': incoming_line[2]['price_unit']
                         })
                     )
                 else:

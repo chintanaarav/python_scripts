@@ -76,6 +76,7 @@ class XmlToDictionary:
         return {
             'product_id': int(zbp_item.get('MATERIAL', 0) or 0),
             'name': zbp_item.get('SHORT_TEXT', ''),
+            'tax_code': zbp_item.get('TAX_CODE', ''),
             'product_qty': float(zbp_item.get('QUANTITY', 0.0) or 0.0),
             'price_unit': float(zbp_item.get('NET_PRICE', 0.0) or 0.0),
             'date_planned': self.convert_date(order_item['E1EDP20']['EDATU'])
