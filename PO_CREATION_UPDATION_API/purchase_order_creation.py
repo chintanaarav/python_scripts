@@ -35,6 +35,10 @@ class PurchaseOrderCreation:
             purchase_order_id = purchase_order[0]['id']  # Get the actual ID for further operations
             print("Purchase id", purchase_order_id)
 
+            # Update order data (header fields only, without order_line)
+            header_data = {k: v for k, v in order_data.items() if k != 'order_line'}
+            result_header = models.execute_kw(db, uid, password, self.PURCHASE_ORDER_MODEL, 'write', [[purchase_order_id], header_data])            
+
             # Fetch existing order lines
             existing_order_line_ids = purchase_order[0]['order_line']
             print("Existing order line id", existing_order_line_ids)
@@ -68,15 +72,22 @@ class PurchaseOrderCreation:
                 else:
                     # Add new order line
                     new_order_lines.append(incoming_line)
+             # Update only the existing order lines
+            if updated_order_lines:
+                result_updated_lines = models.execute_kw(
+                     db, uid, password, self.PURCHASE_ORDER_MODEL, 'write', 
+                    [[purchase_order_id], {'order_line': updated_order_lines}])
+            else:
+               result_updated_lines = None
 
-            # Combine updated and new lines into final order data
-            order_data['order_line'] = updated_order_lines + new_order_lines
-
-            print("Updated order data", order_data)
-
-            # Update the purchase order
-            result = models.execute_kw(db, uid, password, self.PURCHASE_ORDER_MODEL, 'write', [[purchase_order_id], order_data])
-
+             # Add new order lines separately
+            if new_order_lines:
+                result_new_lines = models.execute_kw(
+                     db, uid, password, self.PURCHASE_ORDER_MODEL, 'write', 
+                     [[purchase_order_id], {'order_line': new_order_lines}])
+            else:
+               result_new_lines = None
+               
         except xmlrpc.client.Fault as e:
             error_message = f"Error updating purchase order: {str(e)}"
             print(error_message)
@@ -86,4 +97,4 @@ class PurchaseOrderCreation:
             print(error_message)
             ErrorHandling().handle_error(file_id, error_folder_id, file_name, error_message,uid, db, password, models)
 
-        return result
+        return result_header, result_updated_lines, result_new_lines

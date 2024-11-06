@@ -157,9 +157,9 @@ class Main:
 
         try:
             if purchase_ids:
-                result = PurchaseOrderCreation().update_purchase_order(order_data, file_name, file_id, error_folder_id, models, uid, db, password)
+                result_header, result_updated_lines, result_new_lines = PurchaseOrderCreation().update_purchase_order(order_data, file_name, file_id, error_folder_id, models, uid, db, password)
 
-                if result:
+                if result_header or result_updated_lines or result_new_lines:
                     print(f"Purchase Order updated successfully: {purchase_ids}")
                     message = f"Purchase Order {purchase_id} has been updated."
                     models.execute_kw(db, uid, password, 'purchase.order', 'message_post',
